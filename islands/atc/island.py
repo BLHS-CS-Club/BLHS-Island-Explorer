@@ -274,7 +274,7 @@ THE_PROGRAM = {
 HOW_YOU_JOIN = {
     "kind": "choice",
     "id": "atc-join",
-    "prompt": "How do you join ATC?",
+    "prompt": "How do you join the CS Club?",
     "options": [
         {
             "text": "Show up after school and fill out a form",

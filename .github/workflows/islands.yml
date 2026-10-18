@@ -25,7 +25,7 @@ jobs:
       - name: every island loads, and the manifests are right
         run: python tools/manifest.py
 
-      - name: the skeleton and the ATC island
+      - name: the skeleton and the CS Club island
         run: python -m unittest tests.test_skeleton tests.test_the_club -v
 
       - name: every test in the repo

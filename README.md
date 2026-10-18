@@ -8,7 +8,7 @@ Play it: https://blhs-island-explorer.vercel.app
 
 ## This repository
 
-This is where the islands live, one folder each, written in Python by Algorithmic Thinking Club members. You own a folder, nobody else edits it, and you never touch the engine. What you write runs inside the real game next to everyone else's islands.
+This is where the islands live, one folder each, written in Python by BLHS CS Club members. You own a folder, nobody else edits it, and you never touch the engine. What you write runs inside the real game next to everyone else's islands.
 
 | Repository | What it is |
 | --- | --- |
@@ -61,4 +61,4 @@ The player walks to the spot named `greeter`, presses E, and the game calls that
 - `tests/` what runs on every pull request
 - `vine.py` and `grape.py` the runtime, kept identical to the engine's copy
 
-Built by the Algorithmic Thinking Club at Bonney Lake High School. We meet in room 303 after school.
+Built by the CS Club at Bonney Lake High School. We meet in room 303 after school.
