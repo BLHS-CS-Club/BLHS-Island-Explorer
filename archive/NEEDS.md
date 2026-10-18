@@ -12,7 +12,7 @@ records what was measured to get there and the next person to touch that code
 should not have to measure it again.
 
 **And the branch-URL proof is done, 2026-08-29.** The skeleton loaded straight
-off `raw.githubusercontent.com/Algorithmic-Thinking-Club/BLHS-Island-Explorer/<branch>/islands/skeleton/`
+off `raw.githubusercontent.com/BLHS-CS-Club/BLHS-Island-Explorer/<branch>/islands/skeleton/`
 and ran `@on_talk("greeter")` in the real dialogue box. Proven against a branch
 rather than only against `main`: the branch carried a line `main` does not have,
 the game drew that line, and `main` drew its own. The branch was deleted

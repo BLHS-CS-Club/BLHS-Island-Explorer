@@ -12,8 +12,8 @@ This is where the islands live, one folder each, written in Python by BLHS CS Cl
 
 | Repository | What it is |
 | --- | --- |
-| [BLHS-Island-Explorer](https://github.com/Algorithmic-Thinking-Club/BLHS-Island-Explorer) | the islands, this one |
-| [BLHS-Vine](https://github.com/Algorithmic-Thinking-Club/BLHS-Vine) | the engine that runs them |
+| [BLHS-Island-Explorer](https://github.com/BLHS-CS-Club/BLHS-Island-Explorer) | the islands, this one |
+| [BLHS-Vine](https://github.com/BLHS-CS-Club/BLHS-Vine) | the engine that runs them |
 | [MAPVIS](https://github.com/ashwath-polali/MAPVIS) | the map tool the islands are painted in |
 
 ## What an island is
