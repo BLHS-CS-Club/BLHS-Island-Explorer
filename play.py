@@ -119,11 +119,13 @@ def spots_on(map_id):
 
 
 def on_mapvis(map_id):
+    """The names of the spots on a map that is published in MAPVIS, or None if it isn't there."""
     try:
         with urllib.request.urlopen("%s/api/v1/maps/%s" % (MAPVIS, map_id), timeout=15) as got:
-            return got.status == 200
+            data = json.loads(got.read().decode("utf-8"))
     except Exception:
-        return False
+        return None
+    return [a["name"] for a in (data.get("map") or {}).get("anchors", []) if a.get("name")]
 
 
 def talks_in(folder):
@@ -264,13 +266,18 @@ class Show:
         spots = spots_on(wanted)
         self.map, self.platform = wanted, False
         if spots is None:
-            if on_mapvis(wanted):
+            # a map somebody just published is in MAPVIS before it is built into the game
+            spots = on_mapvis(wanted)
+            if spots is not None:
                 self.platform = True
+                if not self.said_map:
+                    say("  map       %s, straight from MAPVIS" % wanted)
+                    self.said_map = True
             else:
                 self.map, spots = ROOM, spots_on(ROOM)
                 if not self.said_map:
-                    say("  %s's own map (%s) isn't painted yet, so it runs in the CS Club room for now"
-                        % (self.island, wanted))
+                    say("  there's no published map called %s in MAPVIS, so %s runs in the CS Club room for now"
+                        % (wanted, self.island))
                     self.said_map = True
         self.checked = check(self.folder, spots)
         # start the player next to the first thing they can talk to, so pressing E works right away
@@ -494,6 +501,15 @@ def new_island(name=None):
     if not manifest.SLUG.fullmatch(name) or name == "starter":
         raise SystemExit("that name won't work, use lower case letters and digits like maya or team-two")
 
+    on_main = git("branch", "--show-current") in ("main", "master")
+    if on_main:
+        # work sent up from another computer is on a branch with this name, so that gets picked
+        # up before anything new is made on top of it
+        git("fetch", "origin", "+refs/heads/%s:refs/remotes/origin/%s" % (name, name))
+        if git("switch", name) is not None:
+            on_main = False
+            say("  you're on your own branch, called %s" % name)
+
     if name not in find_islands():
         starter = os.path.join(REPO, "practice", "starter")
         folder = os.path.join(REPO, "practice", name)
@@ -511,9 +527,8 @@ def new_island(name=None):
             f.write("\n")
         say("  made practice/%s, which is yours" % name)
 
-    if git("branch", "--show-current") in ("main", "master"):
-        if git("switch", name) is not None or git("switch", "-c", name) is not None:
-            say("  and you're on your own branch now, called %s" % name)
+    if on_main and git("switch", "-c", name) is not None:
+        say("  and you're on your own branch now, called %s" % name)
     return name
 
 

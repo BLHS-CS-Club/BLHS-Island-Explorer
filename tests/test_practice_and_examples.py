@@ -1,14 +1,16 @@
 """Checks the starter, everyone's practice islands, the examples, and what play.py says about mistakes."""
 import inspect
+import json
 import os
 import shutil
 import tempfile
 import unittest
+from unittest import mock
 
 import play
 from tests import pump
 
-# every practice island and example runs in the CS Club room, so these are the spots that exist
+# the starter and the examples run in the CS Club room, and these are the spots that exist there
 ROOM_SPOTS = ["host", "the_desk", "trophies", "the_lab"]
 
 
@@ -17,6 +19,14 @@ def folders(root):
         return []
     return [name for name in sorted(os.listdir(root))
             if os.path.isfile(os.path.join(root, name, "island.json"))]
+
+
+def spots_for(folder):
+    """The spots to hold an island to: the club room's, or None when it names a map of its own."""
+    with open(os.path.join(folder, "island.json"), encoding="utf-8") as f:
+        # a member's own map lives in MAPVIS, which these tests never call, so its spot names
+        # get checked by play.py when the island is played
+        return ROOM_SPOTS if json.load(f).get("map") == play.ROOM else None
 
 
 class PracticeIslandsAndExamples(unittest.TestCase):
@@ -37,7 +47,8 @@ class PracticeIslandsAndExamples(unittest.TestCase):
     def test_play_finds_nothing_wrong_with_any_of_them(self):
         for root, name in self.each():
             with self.subTest(island=name):
-                self.assertEqual(play.check(os.path.join(root, name), ROOM_SPOTS), [])
+                folder = os.path.join(root, name)
+                self.assertEqual(play.check(folder, spots_for(folder)), [])
 
     def test_each_one_imports_and_every_handler_has_a_yield(self):
         import grape
@@ -117,6 +128,55 @@ class WhatPlaySaysAboutMistakes(unittest.TestCase):
     def test_a_name_becomes_a_folder_name(self):
         self.assertEqual(play.slug("Alex-xel"), "alex-xel")
         self.assertEqual(play.slug("  Maya R. "), "maya-r")
+
+
+class AnIslandOnItsOwnMap(unittest.TestCase):
+    """A member publishes a map in MAPVIS, names it in island.json, and plays their island on it."""
+
+    def setUp(self):
+        self.dir = tempfile.mkdtemp(dir=pump.REPO)
+        self.addCleanup(shutil.rmtree, self.dir)
+        self.folder = os.path.join(self.dir, "mine")
+        shutil.copytree(os.path.join(pump.PRACTICE, "starter"), self.folder)
+        path = os.path.join(self.folder, "island.json")
+        with open(path, encoding="utf-8") as f:
+            info = json.load(f)
+        info["programme"], info["map"] = "mine", "my-map"
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(info, f)
+        path = os.path.join(self.folder, "island.py")
+        with open(path, encoding="utf-8") as f:
+            text = f.read()
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(text.replace('"host"', '"mayor"'))
+
+    def show(self, published):
+        """Play the island with the game not knowing the map and MAPVIS answering with these spots."""
+        built_in = lambda m: ROOM_SPOTS if m == play.ROOM else None
+        with mock.patch.object(play, "find_islands", return_value={"mine": self.folder}), \
+                mock.patch.object(play, "spots_on", side_effect=built_in), \
+                mock.patch.object(play, "on_mapvis", return_value=published), \
+                mock.patch.object(play, "say"):
+            show = play.Show("mine")
+            return show, show.state(), show.url()
+
+    def test_it_plays_on_the_map_from_mapvis_and_starts_at_its_first_spot(self):
+        show, state, url = self.show(["mayor", "well"])
+        self.assertEqual(state["errors"], [])
+        self.assertEqual((show.map, show.platform, show.at), ("my-map", True, "mayor"))
+        self.assertIn("map=my-map", url)
+        self.assertIn("src=platform", url)
+
+    def test_a_spot_the_map_does_not_have_is_named_with_the_ones_it_does(self):
+        show, state, url = self.show(["baker", "well"])
+        self.assertEqual(len(state["errors"]), 1)
+        self.assertIn('"mayor"', state["errors"][0]["title"])
+        self.assertIn("baker, well", state["errors"][0]["detail"])
+
+    def test_a_map_that_is_not_published_falls_back_to_the_club_room(self):
+        show, state, url = self.show(None)
+        self.assertEqual((show.map, show.platform), (play.ROOM, False))
+        self.assertNotIn("src=platform", url)
 
 
 if __name__ == "__main__":

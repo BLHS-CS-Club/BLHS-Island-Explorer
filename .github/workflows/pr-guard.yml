@@ -35,7 +35,7 @@ jobs:
           gh api --paginate "repos/$REPO/pulls/$PR/files" \
             --jq '.[] | [.filename, (.previous_filename // "")] | @tsv' > files.tsv
           python3 - <<'PY'
-          import os, re, subprocess, sys
+          import json, os, re, subprocess, sys
           from urllib.parse import quote
 
           env = os.environ
@@ -87,9 +87,30 @@ jobs:
               lines += [""] + ["- " + p for p in problems]
               lines += ["", "If you didn't mean to change those, ask Ash and he'll sort it out with you."]
           elif re.fullmatch(r"[\w.-]+/[\w.-]+", repo) and re.fullmatch(r"[0-9a-f]{40}", sha):
+              def text_of(name):
+                  # the island's files are read as text to find its map, and never run
+                  got = subprocess.run(
+                      ["gh", "api", "-H", "Accept: application/vnd.github.raw",
+                       "repos/%s/contents/practice/%s/%s?ref=%s" % (repo, folder, name, sha)],
+                      capture_output=True, text=True)
+                  return got.stdout if got.returncode == 0 else ""
+              try:
+                  island_map = json.loads(text_of("island.json")).get("map")
+              except (ValueError, AttributeError):
+                  island_map = None
+              if not isinstance(island_map, str) or not SLUG.fullmatch(island_map):
+                  island_map = "atc-1"
+              if island_map == "atc-1":
+                  # the CS Club room, where the president is the one to walk up to
+                  where = "&map=atc-1&deep=1&at=host"
+              else:
+                  # a member's own map comes straight from MAPVIS, and the player starts by the first one to talk to
+                  first = re.search(r"""^\s*@on_talk\(\s*["']([a-z0-9_-]+)["']""", text_of("island.py"), re.M)
+                  spot = first.group(1) if first and first.group(1) != "door" else ""
+                  where = "&map=%s&deep=1%s&src=platform" % (island_map, "&at=" + spot if spot else "")
               def link(owner_repo, ref):
                   base = "https://raw.githubusercontent.com/%s/%s/practice/%s/" % (owner_repo, ref, folder)
-                  return "%s/?scene=pmap&map=atc-1&deep=1&at=host&grape=%s" % (env["GAME"], quote(base, safe=""))
+                  return "%s/?scene=pmap%s&grape=%s" % (env["GAME"], where, quote(base, safe=""))
               lines.append("[Play practice/%s](%s) in the real game, the way it is in this pull request (`%s`)."
                            % (folder, link(repo, sha), sha[:7]))
               lines += ["", "Once it's merged, [this link](%s) plays it for anybody you send it to."
