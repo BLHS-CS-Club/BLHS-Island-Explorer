@@ -61,6 +61,11 @@
     <ul class="guides" id="list"><li><span></span><span class="what">Loading the guides.</span></li></ul>
   </section>
 
+  <section class="paper" id="made" style="margin-top:18px" hidden>
+    <h2>Islands people made</h2>
+    <ul class="guides" id="made-list"></ul>
+  </section>
+
   <p class="foot">Built by the CS Club at Bonney Lake High School. Wednesdays after school, room 305.</p>
 </div>
 
@@ -89,6 +94,25 @@ try {
     li.append(num, body, links)
     list.append(li)
   })
+  // Every island that has been handed in and added, each with a button that plays it in the real game.
+  const made = data.practice || []
+  if (made.length) {
+    const box = document.getElementById('made-list')
+    for (const row of made) {
+      const li = document.createElement('li')
+      const body = document.createElement('span')
+      body.append(Object.assign(document.createElement('b'), { textContent: row.name }))
+      const play = Object.assign(document.createElement('a'), {
+        className: 'btn go', textContent: 'Play it',
+        href: `/?scene=pmap&map=${encodeURIComponent(row.map || 'atc-1')}&deep=1&at=host&grape=/grapes/${encodeURIComponent(row.folder)}/`,
+      })
+      const links = Object.assign(document.createElement('span'), { className: 'links' })
+      links.append(play)
+      li.append(document.createElement('span'), body, links)
+      box.append(li)
+    }
+    document.getElementById('made').hidden = false
+  }
 } catch (e) {
   list.replaceChildren(Object.assign(document.createElement('li'), { textContent: 'The guides did not load. Reload the page.' }))
 }

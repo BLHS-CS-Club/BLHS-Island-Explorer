@@ -741,7 +741,7 @@ def deck(meeting, by_id, cfg):
     s = new("Free time. Nobody's island should still look like the example.")
     headline(s, "MAKE IT", "YOURS", y=1.7)
     words(s, 0.95, 4.4, left, 1.8, ["Open My island from the menu at the top.",
-                                    "Your words. Your question. Your joke."], size=24, color=SOFT, gap=10)
+                                    "Your own words and your own question."], size=24, color=SOFT, gap=10)
 
     s = new("Two or three people. Somebody else plays it, not the person who wrote it.")
     headline(s, "SHOW IT", "THEN HAND IT IN", y=1.3, size=48)
