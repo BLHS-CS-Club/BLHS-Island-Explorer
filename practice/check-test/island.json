@@ -1,0 +1,26 @@
+{
+  "format": 1,
+  "programme": "check-test",
+  "map": "atc-1",
+  "title": "Check Test's Island",
+  "owner": "check-test",
+  "entry": "island.py",
+  "modules": [
+    "island.py"
+  ],
+  "content": {
+    "what": {
+      "text": "A practice island. Nothing in it is a fact about the school.",
+      "source": "unknown"
+    },
+    "when": {
+      "text": "Practice only.",
+      "source": "unknown"
+    },
+    "how_to_join": {
+      "text": "Practice only.",
+      "source": "unknown"
+    },
+    "blurb": "a place to try things"
+  }
+}
