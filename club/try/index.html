@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Try · BLHS Island Explorer</title>
+<link rel="stylesheet" href="/club/vendor/codemirror/codemirror.css">
+<link rel="stylesheet" href="/club/lib/club.css">
+<style>
+  body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+  main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(380px, 46fr) 54fr; gap: 14px; padding: 14px; }
+  .left, .right { display: flex; flex-direction: column; gap: 14px; min-height: 0; min-width: 0; }
+
+  .editor { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+  .tabs { display: flex; align-items: center; gap: 4px; padding: 6px 8px 0; background: var(--paper-lo); border-bottom: 2px solid rgba(36, 23, 8, 0.35); }
+  .tab {
+    font-family: var(--mono); font-size: 14px; padding: 5px 12px; border: 2px solid transparent; border-bottom: 0;
+    border-radius: 4px 4px 0 0; cursor: pointer; background: transparent; color: var(--ink-soft);
+  }
+  .tab.on { background: var(--code-bg); color: var(--code-ink); border-color: var(--wood-edge); }
+  .tabs .what { margin-left: auto; font-family: var(--label); font-size: 14px; color: var(--ink-soft); padding-right: 6px; }
+  .code { flex: 1; min-height: 0; position: relative; background: var(--code-bg); }
+  .code textarea { width: 100%; height: 100%; border: 0; resize: none; background: var(--code-bg); color: var(--code-ink); font-family: var(--mono); font-size: 15px; padding: 10px; }
+  .CodeMirror { position: absolute; inset: 0; height: auto; font-family: var(--mono); font-size: 15px; line-height: 1.5; background: var(--code-bg); color: var(--code-ink); }
+  .CodeMirror-gutters { background: #172224; border-right: 1px solid #2c3b3d; }
+  .CodeMirror-linenumber { color: #6f8a85; }
+  .CodeMirror-cursor { border-left: 2px solid #f1e9d2; }
+  .CodeMirror-activeline-background { background: rgba(255, 255, 255, 0.045); }
+  .CodeMirror-selected { background: #33514f !important; }
+  .CodeMirror-matchingbracket { color: #fff !important; border-bottom: 1px solid #fff; }
+  .cm-s-default .cm-comment { color: #8fa69a; }
+  .cm-s-default .cm-string { color: #e9c46a; }
+  .cm-s-default .cm-keyword { color: #7fd1c0; }
+  .cm-s-default .cm-def { color: #f2a65a; }
+  .cm-s-default .cm-number { color: #c9b8ff; }
+  .cm-s-default .cm-meta { color: #f2a65a; }
+  .cm-s-default .cm-builtin { color: #9fd3ff; }
+  .cm-s-default .cm-atom { color: #c9b8ff; }
+  .cm-s-default .cm-variable, .cm-s-default .cm-variable-2, .cm-s-default .cm-property, .cm-s-default .cm-operator { color: var(--code-ink); }
+  .bad-line { background: rgba(176, 57, 43, 0.45) !important; }
+
+  .gamebox { flex: 62; min-height: 0; }
+  .grow { position: absolute; left: 10px; bottom: 10px; z-index: 2; font-size: 14px; padding: 3px 10px 4px; opacity: 0.85; }
+  body.big .left, body.big .under { display: none; }
+  body.big main { grid-template-columns: 1fr; }
+  .under { flex: 38; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .under > section { min-height: 0; display: flex; flex-direction: column; }
+  .under .msgs, .tasks { flex: 1; min-height: 0; overflow: auto; }
+  .tasks { padding: 10px 14px 12px; font-size: 15px; }
+  .tasks ol { margin: 0; padding-left: 20px; }
+  .tasks li { margin-bottom: 8px; }
+  .tasks p { margin: 0 0 8px; }
+  .tasks code { font-family: var(--mono); font-size: 0.9em; background: rgba(42, 28, 14, 0.1); padding: 1px 5px; border-radius: 3px; }
+  .tasks .more { font-family: var(--label); font-size: 15px; }
+  .bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .copied { font-family: var(--label); font-size: 14px; color: var(--wood-ink); min-width: 70px; }
+  .plank select { max-width: 260px; }
+  kbd { font-family: var(--mono); font-size: 12px; background: rgba(0, 0, 0, 0.25); border-radius: 3px; padding: 1px 5px; }
+
+  /* Clip mode is for recording the guide videos: no menus, a bigger game, a caption along the bottom. */
+  #caption { display: none; }
+  body.clip .under, body.clip #share, body.clip #reset, body.clip #copied, body.clip .plank nav,
+  body.clip .plank label.field, body.clip #grow, body.clip .what { display: none; }
+  body.clip main { grid-template-columns: 45fr 55fr; padding-bottom: 86px; }
+  body.clip .CodeMirror { font-size: 15px; }
+  body.clip #caption {
+    display: flex; position: fixed; left: 0; right: 0; bottom: 0; height: 72px; align-items: center; justify-content: center;
+    background: linear-gradient(180deg, var(--wood) 0, var(--wood-lo) 100%); border-top: 3px solid var(--wood-edge);
+    color: #fff; font-family: var(--body); font-size: 27px; font-weight: 600; letter-spacing: 0.2px; padding: 0 30px; text-align: center;
+  }
+  .hl-line { background: rgba(233, 196, 106, 0.18) !important; }
+
+  @media (max-width: 1000px) {
+    body { height: auto; overflow: auto; }
+    main { grid-template-columns: 1fr; }
+    .editor { height: 60vh; flex: none; }
+    .gamebox { height: 56vh; flex: none; }
+    .under { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<header class="plank">
+  <a class="name" href="/club/">BLHS Island Explorer<small>try</small></a>
+  <nav>
+    <a href="/club/">Club</a>
+    <a class="here" href="/club/try/">Try</a>
+  </nav>
+  <label class="field">Open
+    <select id="slot"></select>
+  </label>
+  <span class="spacer"></span>
+  <div class="bar">
+    <span class="copied" id="copied"></span>
+    <button class="btn" id="share" title="Copy a link that has your island in it">Copy my link</button>
+    <button class="btn" id="reset" title="Throw away your changes to this one">Reset</button>
+    <button class="btn go" id="run" title="Run your island in the game">Run <kbd>Ctrl</kbd> <kbd>Enter</kbd></button>
+  </div>
+</header>
+
+<main>
+  <div class="left">
+    <section class="paper editor">
+      <div class="tabs" id="tabs"><span class="what" id="what"></span></div>
+      <div class="code" id="code"></div>
+    </section>
+  </div>
+  <div class="right">
+    <div class="gamebox">
+      <div id="box" style="position:absolute;inset:0"><div class="wait">Press Run to start your island.</div></div>
+      <button class="btn plain grow" id="grow" title="Make the game fill the page">Bigger</button>
+    </div>
+    <div class="under">
+      <section class="paper">
+        <h2 id="tasks-title">Try this</h2>
+        <div class="tasks" id="tasks"></div>
+      </section>
+      <section class="paper">
+        <h2>What went wrong</h2>
+        <div class="msgs" id="msgs"></div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<div id="caption"></div>
+
+<script src="/club/vendor/codemirror/codemirror.js"></script>
+<script src="/club/vendor/codemirror/python.js"></script>
+<script src="/club/vendor/codemirror/matchbrackets.js"></script>
+<script src="/club/vendor/codemirror/active-line.js"></script>
+<script src="/club/vendor/codemirror/comment.js"></script>
+<script type="module">
+import { createStage, PRACTICE_MAP } from '/club/lib/stage.js'
+
+const $ = (id) => document.getElementById(id)
+const GRAPE = '/grapes/try-it/'
+const MINE = 'mine'
+
+// Every slot is one island you can have open: your own, or one of the guide examples.
+// Each keeps its own copy of the code in this browser, so switching loses nothing.
+let guides = []
+let starter = {}
+let slot = MINE
+let files = {}
+let active = 'island.py'
+let editor = null
+let marked = null
+
+const remember = (key, value) => { try { localStorage.setItem(key, value) } catch (e) {} }
+const recall = (key) => { try { return localStorage.getItem(key) } catch (e) { return null } }
+const forget = (key) => { try { localStorage.removeItem(key) } catch (e) {} }
+
+const pyOnly = (all) => Object.fromEntries(Object.entries(all || {}).filter(([name]) => name.endsWith('.py')))
+const original = (id) => pyOnly(id === MINE ? starter : (guides.find((g) => g.id === id) || {}).files)
+
+const stage = createStage({ box: $('box'), list: $('msgs'), path: '/club/try/game/', files: () => files })
+
+// ---- the editor ------------------------------------------------------------
+
+function makeEditor() {
+  const host = $('code')
+  if (!window.CodeMirror) {
+    // The editor library didn't load. A plain box still works.
+    const area = document.createElement('textarea')
+    area.spellcheck = false
+    host.append(area)
+    area.addEventListener('input', () => { files[active] = area.value; stash() })
+    return { get: () => area.value, set: (t) => { area.value = t }, mark: () => {}, focus: () => area.focus() }
+  }
+  const cm = window.CodeMirror(host, {
+    mode: 'python', lineNumbers: true, indentUnit: 4, tabSize: 4, indentWithTabs: false,
+    matchBrackets: true, styleActiveLine: true, lineWrapping: false,
+    extraKeys: {
+      Tab: (c) => (c.somethingSelected() ? c.indentSelection('add') : c.replaceSelection('    ', 'end')),
+      'Shift-Tab': (c) => c.indentSelection('subtract'),
+      'Ctrl-Enter': run, 'Cmd-Enter': run, 'Ctrl-S': run, 'Cmd-S': run,
+      'Ctrl-/': 'toggleComment', 'Cmd-/': 'toggleComment',
+    },
+  })
+  cm.on('change', () => { files[active] = cm.getValue(); stash() })
+  return {
+    get: () => cm.getValue(),
+    set: (t) => { cm.setValue(t); cm.clearHistory() },
+    focus: () => cm.focus(),
+    // Paints one line red, or clears it with no arguments.
+    mark: (line) => {
+      if (marked !== null) cm.removeLineClass(marked, 'background', 'bad-line')
+      marked = null
+      if (line) {
+        marked = cm.addLineClass(line - 1, 'background', 'bad-line')
+        cm.scrollIntoView({ line: line - 1, ch: 0 }, 80)
+      }
+    },
+  }
+}
+
+function showTabs() {
+  const tabs = $('tabs')
+  tabs.querySelectorAll('.tab').forEach((t) => t.remove())
+  const names = Object.keys(files).sort((a, b) => (a === 'island.py' ? -1 : b === 'island.py' ? 1 : a.localeCompare(b)))
+  for (const name of names) {
+    const tab = document.createElement('button')
+    tab.className = 'tab' + (name === active ? ' on' : '')
+    tab.textContent = name
+    tab.onclick = () => { active = name; editor.mark(); editor.set(files[name]); showTabs() }
+    tabs.insertBefore(tab, $('what'))
+  }
+}
+
+// ---- keeping your work -----------------------------------------------------
+
+let pending = null
+function stash() {
+  clearTimeout(pending)
+  pending = setTimeout(() => remember(`club:try:${slot}`, JSON.stringify(files)), 300)
+}
+
+function open(id) {
+  slot = id
+  remember('club:try:slot', id)
+  let kept = null
+  try { kept = JSON.parse(recall(`club:try:${id}`) || 'null') } catch (e) { kept = null }
+  files = kept && Object.keys(kept).length ? kept : { ...original(id) }
+  if (!files['island.py']) files['island.py'] = ''
+  active = 'island.py'
+  editor.mark()
+  editor.set(files[active])
+  showTabs()
+  showTasks()
+  $('slot').value = id
+}
+
+function showTasks() {
+  const box = $('tasks')
+  box.replaceChildren()
+  const guide = guides.find((g) => g.id === slot)
+  const add = (tag, text) => { const n = document.createElement(tag); n.innerHTML = text; box.append(n); return n }
+  if (!guide) {
+    $('tasks-title').textContent = 'Your island'
+    $('what').textContent = 'saved in this browser'
+    add('p', 'This one is yours. Change anything, then press Run.')
+    add('p', 'To keep it or hand it in, press <b>Copy my link</b>. The link has your whole island in it and opens on any computer.')
+    add('p', 'Stuck for ideas? Pick a guide from <b>Open</b> at the top.')
+    return
+  }
+  $('tasks-title').textContent = 'Try this'
+  $('what').textContent = guide.title
+  const list = document.createElement('ol')
+  for (const task of guide.try || []) { const li = document.createElement('li'); li.innerHTML = task; list.append(li) }
+  box.append(list)
+  const links = []
+  if (guide.video) links.push(`<a href="${guide.video}" target="_blank" rel="noopener">Watch the video</a>`)
+  if (guide.doc) links.push(`<a href="${guide.doc}" target="_blank" rel="noopener">Read the guide</a>`)
+  if (links.length) add('p', links.join(' &nbsp; ')).className = 'more'
+}
+
+// ---- running it ------------------------------------------------------------
+
+function manifest() {
+  return {
+    format: 1, programme: 'try-it', map: PRACTICE_MAP, title: 'My island', owner: 'you',
+    entry: 'island.py', modules: Object.keys(files),
+    content: {
+      what: { text: 'A practice island.', source: 'unknown' },
+      when: { text: 'Practice only.', source: 'unknown' },
+      how_to_join: { text: 'Practice only.', source: 'unknown' },
+      blurb: 'a place to try things',
+    },
+  }
+}
+
+let ready = null
+function worker() {
+  if (!ready) {
+    ready = (async () => {
+      if (!('serviceWorker' in navigator) || !window.caches) throw new Error('no service worker')
+      await navigator.serviceWorker.register('/club/try/sw.js', { scope: '/club/try/' })
+      await navigator.serviceWorker.ready
+    })()
+  }
+  return ready
+}
+
+async function run() {
+  files[active] = editor.get()
+  remember(`club:try:${slot}`, JSON.stringify(files))
+  editor.mark()
+  try {
+    await worker()
+  } catch (e) {
+    stage.say({ kind: 'error', title: "This browser window can't run the game here", detail: 'Open this page in a normal Chrome or Edge window, not a private one.' })
+    return
+  }
+  const cache = await caches.open('blhs-try')
+  const put = (name, text, type) => cache.put(GRAPE + name, new Response(text, { headers: { 'Content-Type': type } }))
+  for (const key of await cache.keys()) await cache.delete(key)
+  await put('island.json', JSON.stringify(manifest()), 'application/json')
+  for (const [name, text] of Object.entries(files)) await put(name, text, 'text/x-python')
+
+  const at = new URLSearchParams(location.search).get('at') || (guides.find((g) => g.id === slot) || {}).start || 'host'
+  stage.run({ grape: GRAPE, map: PRACTICE_MAP, at: at === 'door' ? '' : at, fresh: true })
+}
+
+// An error that knows its line paints that line red in the editor.
+stage.onError((info) => {
+  if (!info) return
+  const m = /^([a-z_]+\.py), line (\d+)$/.exec(info.where || '')
+  if (!m) return
+  if (m[1] !== active && files[m[1]] !== undefined) { active = m[1]; editor.set(files[active]); showTabs() }
+  if (m[1] === active) editor.mark(Number(m[2]))
+})
+
+// ---- a link with the island inside it ---------------------------------------
+
+const b64 = (bytes) => btoa(String.fromCharCode(...bytes)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+const unb64 = (text) => Uint8Array.from(atob(text.replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0))
+async function squeeze(bytes, how) {
+  const stream = new Blob([bytes]).stream().pipeThrough(how)
+  return new Uint8Array(await new Response(stream).arrayBuffer())
+}
+async function pack(value) {
+  const bytes = new TextEncoder().encode(JSON.stringify(value))
+  return b64(await squeeze(bytes, new CompressionStream('deflate-raw')))
+}
+async function unpack(text) {
+  const bytes = await squeeze(unb64(text), new DecompressionStream('deflate-raw'))
+  return JSON.parse(new TextDecoder().decode(bytes))
+}
+
+$('share').onclick = async () => {
+  files[active] = editor.get()
+  const link = `${location.origin}/club/try/#i=${await pack({ files })}`
+  try {
+    await navigator.clipboard.writeText(link)
+    $('copied').textContent = 'Copied.'
+  } catch (e) {
+    window.prompt('Copy this link:', link)
+  }
+  setTimeout(() => { $('copied').textContent = '' }, 2500)
+}
+
+$('reset').onclick = () => {
+  const name = slot === MINE ? 'your island' : 'this example'
+  if (!window.confirm(`Throw away your changes to ${name} and start it again?`)) return
+  forget(`club:try:${slot}`)
+  open(slot)
+}
+
+$('grow').onclick = () => {
+  const big = document.body.classList.toggle('big')
+  $('grow').textContent = big ? 'Back to the code' : 'Bigger'
+}
+$('run').onclick = run
+$('slot').onchange = () => { open($('slot').value); run() }
+window.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'Enter' || e.key === 's')) { e.preventDefault(); run() }
+})
+
+// ---- start -----------------------------------------------------------------
+
+const clipMode = new URLSearchParams(location.search).has('clip')
+if (clipMode) document.body.classList.add('clip')
+editor = makeEditor()
+// In a video nobody can scroll sideways, so long lines wrap.
+if (clipMode && window.CodeMirror) document.querySelector('.CodeMirror').CodeMirror.setOption('lineWrapping', true)
+try {
+  const data = await (await fetch('/club/data/guides.json', { cache: 'no-store' })).json()
+  guides = data.guides || []
+  starter = data.starter || {}
+} catch (e) {
+  stage.say({ kind: 'warn', title: 'The guide examples did not load', detail: 'Your own island still works.' })
+}
+
+const select = $('slot')
+const mine = document.createElement('option')
+mine.value = MINE
+mine.textContent = 'My island'
+select.append(mine)
+if (guides.length) {
+  const group = document.createElement('optgroup')
+  group.label = 'Guides'
+  guides.forEach((g, i) => {
+    const opt = document.createElement('option')
+    opt.value = g.id
+    opt.textContent = `${i + 1}. ${g.title}`
+    group.append(opt)
+  })
+  select.append(group)
+}
+
+const asked = new URLSearchParams(location.search).get('g')
+const inLink = /^#i=(.+)$/.exec(location.hash)
+if (inLink) {
+  // Someone's island came in through the link. It goes in its own slot, so yours is not replaced.
+  try {
+    const got = await unpack(inLink[1])
+    const opt = document.createElement('option')
+    opt.value = 'link'
+    opt.textContent = 'From the link'
+    select.insertBefore(opt, select.children[1])
+    remember('club:try:link', JSON.stringify(pyOnly(got.files)))
+    open('link')
+    history.replaceState(null, '', location.pathname + location.search)
+  } catch (e) {
+    stage.say({ kind: 'error', title: 'That link is broken', detail: 'The island in it could not be read. Ask for the link again.' })
+    open(MINE)
+  }
+} else if (asked && guides.some((g) => g.id === asked)) {
+  open(asked)
+} else {
+  const last = recall('club:try:slot')
+  open(last && (last === MINE || guides.some((g) => g.id === last)) ? last : MINE)
+}
+run()
+</script>
+</body>
+</html>

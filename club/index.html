@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CS Club · BLHS Island Explorer</title>
+<link rel="stylesheet" href="/club/lib/club.css">
+<style>
+  .doors { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 6px 0 28px; }
+  .door { padding: 16px 18px 18px; text-decoration: none; display: block; }
+  .door h3 { font-family: var(--title); font-weight: normal; font-size: 24px; letter-spacing: 1px; margin: 0 0 4px; }
+  .door p { margin: 0; color: var(--ink-soft); }
+  .door:hover { transform: translateY(-2px); }
+  .guides { list-style: none; margin: 0; padding: 6px 0; }
+  .guides li { display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; align-items: center; padding: 10px 16px; border-bottom: 1px solid rgba(36, 23, 8, 0.2); }
+  .guides li:last-child { border-bottom: 0; }
+  .num { font-family: var(--title); font-size: 26px; color: var(--green); text-align: center; }
+  .guides b { font-size: 17px; }
+  .guides .what { color: var(--ink-soft); font-size: 15px; }
+  .links { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  .links .btn { font-size: 15px; padding: 3px 10px 4px; }
+  .foot { color: #cfe3d8; font-size: 14px; margin-top: 22px; }
+  .foot a { color: #fff; }
+  @media (max-width: 760px) {
+    .doors { grid-template-columns: 1fr; }
+    .guides li { grid-template-columns: 36px 1fr; }
+    .links { grid-column: 2; justify-content: flex-start; }
+  }
+</style>
+</head>
+<body>
+<header class="plank">
+  <a class="name" href="/club/">BLHS Island Explorer<small>cs club</small></a>
+  <nav>
+    <a class="here" href="/club/">Club</a>
+    <a href="/club/try/">Try</a>
+  </nav>
+</header>
+
+<div class="page">
+  <h1>Make an island</h1>
+  <p class="lead">Every island in the game is a short Python file. Change a line and the real game changes. Nothing to install and nothing to log in to.</p>
+
+  <div class="doors">
+    <a class="paper door" href="/club/try/">
+      <h3>Try it</h3>
+      <p>Code on the left, the game on the right. Start here.</p>
+    </a>
+    <a class="paper door" href="#guides">
+      <h3>Guides</h3>
+      <p>One small thing at a time, each with a short video.</p>
+    </a>
+    <a class="paper door" href="/?scene=boot">
+      <h3>Play the game</h3>
+      <p>The whole thing, the way a freshman will see it.</p>
+    </a>
+  </div>
+
+  <section class="paper" id="guides">
+    <h2>The guides</h2>
+    <ul class="guides" id="list"><li><span></span><span class="what">Loading the guides.</span></li></ul>
+  </section>
+
+  <p class="foot">Built by the CS Club at Bonney Lake High School. Wednesdays after school, room 305.</p>
+</div>
+
+<script type="module">
+const list = document.getElementById('list')
+try {
+  const data = await (await fetch('/club/data/guides.json', { cache: 'no-store' })).json()
+  list.replaceChildren()
+  data.guides.forEach((g, i) => {
+    const li = document.createElement('li')
+    const num = Object.assign(document.createElement('span'), { className: 'num', textContent: String(i + 1) })
+    const body = document.createElement('span')
+    body.append(Object.assign(document.createElement('b'), { textContent: g.title }))
+    body.append(document.createElement('br'))
+    body.append(Object.assign(document.createElement('span'), { className: 'what', textContent: g.blurb || '' }))
+    const links = Object.assign(document.createElement('span'), { className: 'links' })
+    const add = (text, href, cls, blank) => {
+      if (!href) return
+      const a = Object.assign(document.createElement('a'), { className: `btn ${cls}`, textContent: text, href })
+      if (blank) { a.target = '_blank'; a.rel = 'noopener' }
+      links.append(a)
+    }
+    add('Watch', g.video, 'plain', true)
+    add('Read', g.doc, 'plain', true)
+    add('Open it', `/club/try/?g=${encodeURIComponent(g.id)}`, 'go', false)
+    li.append(num, body, links)
+    list.append(li)
+  })
+} catch (e) {
+  list.replaceChildren(Object.assign(document.createElement('li'), { textContent: 'The guides did not load. Reload the page.' }))
+}
+</script>
+</body>
+</html>
