@@ -1,0 +1,131 @@
+# Runs on every pull request, from main's copy of this file and never the pull
+# request's own, so a pull request can't change what it checks. It never checks
+# out or runs the pull request's code: it reads the list of changed files from
+# GitHub, says whether they all sit in one practice folder, and leaves one
+# comment with a link that plays the island in the real game.
+name: pr guard
+
+on:
+  pull_request_target:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: pr-guard-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  scope:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: the pull request only changes one practice folder
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          GAME: https://blhs-island-explorer.vercel.app
+        run: |
+          gh api --paginate "repos/$REPO/pulls/$PR/files" \
+            --jq '.[] | [.filename, (.previous_filename // "")] | @tsv' > files.tsv
+          python3 - <<'PY'
+          import os, re, subprocess, sys
+          from urllib.parse import quote
+
+          env = os.environ
+          SLUG = re.compile(r"[a-z0-9]+(-[a-z0-9]+)*")
+          NAME = re.compile(r"island\.json|[a-z_][a-z0-9_]*\.py")
+
+          def shown(p):
+              # a file name is the pull request's own text, so nothing in it gets to render as markdown
+              return "`%s`" % re.sub(r"[^A-Za-z0-9._/-]", "?", p)
+
+          folders, outside, other, starter = set(), [], [], False
+          with open("files.tsv", encoding="utf-8") as f:
+              for line in f:
+                  for path in line.rstrip("\n").split("\t"):
+                      if not path:
+                          continue
+                      parts = path.split("/")
+                      if parts[:2] == ["practice", "starter"]:
+                          starter = True
+                      elif len(parts) == 3 and parts[0] == "practice" and SLUG.fullmatch(parts[1]):
+                          folders.add(parts[1])
+                          if not NAME.fullmatch(parts[2]):
+                              other.append(path)
+                      else:
+                          outside.append(path)
+
+          problems = []
+          if starter:
+              problems.append("It changes `practice/starter`, which is the one everybody copies. "
+                              "Run `python play.py --new` to get a folder of your own and put your lines there.")
+          if outside:
+              problems.append("It changes files outside your practice folder: "
+                              + ", ".join(shown(p) for p in outside[:20]))
+          if other:
+              problems.append("An island is only `island.json` and `.py` files, and this adds something else: "
+                              + ", ".join(shown(p) for p in other[:20]))
+          if len(folders) > 1:
+              problems.append("It changes more than one practice folder: "
+                              + ", ".join(shown("practice/" + n) for n in sorted(folders)))
+          if not folders and not outside and not starter:
+              problems.append("It doesn't change any files.")
+
+          folder = next(iter(folders)) if len(folders) == 1 else None
+          repo, sha = env.get("HEAD_REPO", ""), env.get("HEAD_SHA", "")
+          lines = ["<!-- play-link -->"]
+          if problems:
+              lines.append("This one can't go in yet, because a pull request here only changes "
+                           "the files in your own folder under `practice/`.")
+              lines += [""] + ["- " + p for p in problems]
+              lines += ["", "If you didn't mean to change those, ask Ash and he'll sort it out with you."]
+          elif re.fullmatch(r"[\w.-]+/[\w.-]+", repo) and re.fullmatch(r"[0-9a-f]{40}", sha):
+              def link(owner_repo, ref):
+                  base = "https://raw.githubusercontent.com/%s/%s/practice/%s/" % (owner_repo, ref, folder)
+                  return "%s/?scene=pmap&map=atc-1&deep=1&at=host&grape=%s" % (env["GAME"], quote(base, safe=""))
+              lines.append("[Play practice/%s](%s) in the real game, the way it is in this pull request (`%s`)."
+                           % (folder, link(repo, sha), sha[:7]))
+              lines += ["", "Once it's merged, [this link](%s) plays it for anybody you send it to."
+                        % link(env["REPO"], "main")]
+              # who put the folder on main first, so a change to somebody else's island gets noticed
+              first = subprocess.run(
+                  ["gh", "api", "--paginate",
+                   "repos/%s/commits?sha=main&path=practice/%s&per_page=100" % (env["REPO"], folder),
+                   "--jq", '.[] | (.author.login // "")'],
+                  capture_output=True, text=True).stdout.split("\n")
+              first = [a for a in first if a]
+              if first and first[-1].lower() != env["AUTHOR"].lower():
+                  lines += ["", "Heads up: `practice/%s` was started by %s, and this change is from %s."
+                            % (folder, first[-1], re.sub(r"[^A-Za-z0-9-]", "", env["AUTHOR"]))]
+          else:
+              problems.append("The branch this came from is gone, so there's nothing to play.")
+              lines.append(problems[-1])
+
+          with open("body.md", "w", encoding="utf-8") as f:
+              f.write("\n".join(lines) + "\n")
+          for p in problems:
+              print("::error::" + p)
+          sys.exit(1 if problems else 0)
+          PY
+
+      - name: leave the link on the pull request
+        if: always() && hashFiles('body.md') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          id=$(gh api --paginate "repos/$REPO/issues/$PR/comments" \
+            --jq '.[] | select(.user.login == "github-actions[bot]" and (.body | startswith("<!-- play-link -->"))) | .id' | head -n 1)
+          if [ -n "$id" ]; then
+            gh api -X PATCH "repos/$REPO/issues/comments/$id" -F body=@body.md > /dev/null
+          else
+            gh api -X POST "repos/$REPO/issues/$PR/comments" -F body=@body.md > /dev/null
+          fi
