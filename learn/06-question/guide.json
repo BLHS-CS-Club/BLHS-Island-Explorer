@@ -1,0 +1,59 @@
+{
+  "title": "Ask a question and score it",
+  "blurb": "A real quiz question, with a reply for every answer and a score at the end.",
+  "start": "host",
+  "words": [
+    "play"
+  ],
+  "how": [
+    "<code>QUESTION</code> describes one question: the <code>prompt</code>, and a list of <code>options</code>. One option has <code>\"correct\": True</code>.",
+    "Every option has a <code>reply</code>. That's what the player sees after they answer, so a wrong answer still tells them something.",
+    "<code>score = yield play(\"club_day\", title=\"One question\", items=[QUESTION])</code> runs it. The first name is your name for this activity. <code>items</code> is the list of questions.",
+    "<code>score</code> comes back as a number from 0 to 4. All right is 4. If the player closed the question without answering, it's <code>None</code>, so check for that first."
+  ],
+  "try": [
+    "Rewrite the question about something you know is true about BLHS. Only put in facts you're sure of.",
+    "Add a second question. Make <code>QUESTION2</code> the same way, give it a different <code>id</code>, and put both in <code>items</code>.",
+    "Give three different lines for a perfect score, a half score and zero."
+  ],
+  "breaks": [
+    [
+      "Two options with the same id, or the question won't start",
+      "Every question needs its own <code>id</code>. Copying a question and forgetting to change the id is the usual cause."
+    ],
+    [
+      "Python could not read your file, near QUESTION",
+      "A comma or a curly bracket is missing. Each option ends with <code>},</code>"
+    ],
+    [
+      "It always says Not quite",
+      "Check that exactly one option has <code>\"correct\": True</code>, with a capital T."
+    ]
+  ],
+  "video": "https://drive.google.com/file/d/1YinmmQmP8-fmNh4SMZE17g6M8Pzb17WO/view",
+  "doc": "https://docs.google.com/document/d/1BE5SQCplWUFbTx7GUVVlenIDsCyv-YbB4tylf1AwVfY/edit",
+  "clip": [
+    "say:One question, written as plain data.",
+    "hl:6-15",
+    4200,
+    "say:play runs it and waits for an answer.",
+    "hl:23-23",
+    "e",
+    1500,
+    "space",
+    3000,
+    "say:Every answer gets its own reply.",
+    "hl:11-13",
+    "pick:0",
+    3200,
+    "button:Keep going",
+    3000,
+    "say:The score comes back to your code.",
+    "hl:24-29",
+    "button:Back to the game",
+    2600,
+    2200,
+    "space",
+    800
+  ]
+}

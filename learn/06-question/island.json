@@ -1,0 +1,26 @@
+{
+  "format": 1,
+  "programme": "guide-question",
+  "map": "atc-1",
+  "title": "Ask A Scored Question",
+  "owner": "cs-club",
+  "entry": "island.py",
+  "modules": [
+    "island.py"
+  ],
+  "content": {
+    "what": {
+      "text": "An example from the guides. Nothing in it is a fact about the school.",
+      "source": "unknown"
+    },
+    "when": {
+      "text": "Practice only.",
+      "source": "unknown"
+    },
+    "how_to_join": {
+      "text": "Practice only.",
+      "source": "unknown"
+    },
+    "blurb": "an example from the guides"
+  }
+}

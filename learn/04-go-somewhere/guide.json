@@ -1,0 +1,53 @@
+{
+  "title": "Send the player somewhere",
+  "blurb": "The game tells the player what to do and draws an arrow to it.",
+  "start": "host",
+  "words": [
+    "on_start",
+    "objective",
+    "guide_to"
+  ],
+  "how": [
+    "<code>@on_start</code> runs one time, when the player arrives on your island. Nobody has to press anything.",
+    "<code>objective(\"...\")</code> sets the line at the top of the screen. Keep it short, like an order: find this, talk to them.",
+    "<code>guide_to(\"trophies\")</code> draws an arrow and a trail to the spot named <code>trophies</code>.",
+    "When the player gets there, take both down with <code>guide_to(None)</code> and <code>objective(None)</code>. If you leave an arrow up it keeps pointing at a place they've already been."
+  ],
+  "try": [
+    "Send the player to the computer instead. Its spot is called <code>the_desk</code>. You have to change two lines.",
+    "Make it two stops. When they find the trophies, set a new objective and an arrow to the president.",
+    "Make the president refuse to talk until the trophies are found. Guide 3 has what you need."
+  ],
+  "breaks": [
+    [
+      "There is no spot called ... on this map",
+      "The name in <code>guide_to</code> or <code>@on_talk</code> isn't a spot on this map. The message lists the ones that are."
+    ],
+    [
+      "The arrow never goes away",
+      "<code>guide_to(None)</code> is missing, or it's missing its <code>yield</code>."
+    ],
+    [
+      "Nothing shows at the top",
+      "<code>objective</code> needs <code>yield</code> in front, like everything else."
+    ]
+  ],
+  "video": "https://drive.google.com/file/d/11WWmgk3LkN35voqEWoI1fo4bR7Q0rUeT/view",
+  "doc": "https://docs.google.com/document/d/1zM-ysU9Ff1u_WPV7JdhJuvsnp4mwxHH2KZKu8gtbGYg/edit",
+  "clip": [
+    "say:@on_start runs once, when the player arrives.",
+    "hl:6-7",
+    3800,
+    "say:objective is the line at the top. guide_to is the arrow.",
+    "hl:10-11",
+    4200,
+    "say:Change where it points.",
+    "hl:11-11",
+    "edit:    yield guide_to(\"trophies\")=>    yield guide_to(\"the_desk\")",
+    900,
+    "say:Run it. The arrow moves.",
+    "hl:0-0",
+    "run",
+    3500
+  ]
+}
