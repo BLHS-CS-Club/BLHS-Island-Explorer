@@ -1,18 +1,18 @@
-"""Your first island. Change something, save, and the game starts over."""
+"""Your island. Change a line, save the file, and the game reloads with it."""
 from grape import on_start, on_talk
 from vine import choose, guide_to, objective, say
 
 
 @on_start
 def arriving():
-    # Runs once, when the player arrives.
+    # runs once, when the player gets here
     yield objective("Go talk to the club president.")
     yield guide_to("host")
 
 
 @on_talk("host")
 def the_president():
-    # Runs when the player walks up to the president and presses E.
+    # runs when the player walks up to the president and presses E
     yield guide_to(None)
     yield say("Hey. You made it.", who="host")
     pick = yield choose(["What is this place?", "Just looking"])
