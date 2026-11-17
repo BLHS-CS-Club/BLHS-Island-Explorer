@@ -525,6 +525,8 @@ def new_island(name=None):
         with open(os.path.join(folder, "island.json"), "w", encoding="utf-8", newline="\n") as f:
             json.dump(info, f, indent=2)
             f.write("\n")
+        # whatever you wrote in the starter came along, so the starter goes back to how it was
+        git("checkout", "--", "practice/starter")
         say("  made practice/%s, which is yours" % name)
 
     if on_main and git("switch", "-c", name) is not None:
