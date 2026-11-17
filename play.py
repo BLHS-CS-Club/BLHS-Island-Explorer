@@ -457,6 +457,13 @@ class Server(ThreadingHTTPServer):
     allow_reuse_address = False
     daemon_threads = True
 
+    def handle_error(self, request, client_address):
+        # when the game reloads, the browser hangs up on whatever it was still loading, and
+        # that isn't something to print a traceback about
+        if isinstance(sys.exc_info()[1], ConnectionError):
+            return
+        super().handle_error(request, client_address)
+
 
 def git(*args):
     """Run a git command here and give back what it printed, or None if it didn't work."""
@@ -571,6 +578,9 @@ def main(argv):
     Handler.show = Show(island, at)
 
     url = "http://localhost:%d/" % PORT
+    if os.environ.get("BLHS_PLAY_F5"):
+        # F5 in VS Code types a long command into the terminal first, so start below it on a clean screen
+        os.system("cls" if os.name == "nt" else "clear")
     say("  playing   %s" % rel(islands[island]))
     say("  game      %s" % url)
     say("  the game reloads when you save, and errors show up here (ctrl+c to stop)")

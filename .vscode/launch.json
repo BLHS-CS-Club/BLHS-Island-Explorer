@@ -7,7 +7,9 @@
       "request": "launch",
       "program": "${workspaceFolder}/play.py",
       "args": ["--file", "${file}"],
-      "console": "integratedTerminal"
+      "console": "integratedTerminal",
+      "env": { "BLHS_PLAY_F5": "1" },
+      "noDebug": true
     }
   ]
 }

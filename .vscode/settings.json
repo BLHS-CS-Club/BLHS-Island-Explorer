@@ -7,5 +7,10 @@
   "git.confirmSync": false,
   "git.postCommitCommand": "sync",
   "git.autofetch": true,
-  "python.analysis.extraPaths": ["."]
+  "python.analysis.extraPaths": ["."],
+  "python.terminal.launchArgs": ["play.py", "--file"],
+  "files.exclude": { "**/__pycache__": true },
+  "debug.openDebug": "neverOpen",
+  "debug.internalConsoleOptions": "neverOpen",
+  "debug.showInStatusBar": "never"
 }
