@@ -5,10 +5,10 @@ from vine import choose, say
 
 @on_talk("host")
 def talk():
-    yield say("Quick question.", who="host")
+    yield say("Okay, quick question for you.", who="host")
     # choose shows the buttons and gives back which one got picked: 0 is the first, 1 is the second
     pick = yield choose(["Pizza", "Tacos"], prompt="Best lunch?")
     if pick == 0:
-        yield say("Pizza. Solid.", who="host")
+        yield say("Pizza is a solid pick.", who="host")
     else:
-        yield say("Tacos. Bold.", who="host")
+        yield say("Tacos, okay, I respect that.", who="host")

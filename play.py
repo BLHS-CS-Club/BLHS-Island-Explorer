@@ -4,12 +4,11 @@
     python play.py atc        plays the island in that folder
     python play.py --new      makes you an island of your own and a branch to keep it on
 
-Leave it running. When you save a file the game reloads, and if something is
-wrong it shows on top of the game and here in the terminal.
+Leave it running, because the game reloads every time you save a file, and if
+something is wrong it shows on top of the game and here in the terminal.
 
-This doesn't need the engine, Node or a build. It gets the game from the
-website and swaps in the island files from this folder, so what you see is the
-real game running your code.
+You don't need the engine, Node or a build for any of this, since play.py gets
+the game from the website and swaps in the island files from this folder.
 """
 import gzip
 import json
@@ -76,7 +75,7 @@ def hint_for(text):
 
 
 def find_islands():
-    """Every island folder here, as {name: folder path}. The name is the folder's name."""
+    """Every island folder here, as {name: folder path}, where the name is the folder's own name."""
     found = {}
     for root in ROOTS:
         base = os.path.join(REPO, root)
@@ -141,7 +140,7 @@ def talks_in(folder):
 
 
 def find_line(text, folder):
-    """Some errors name the thing that is wrong but not its line. This looks the name up."""
+    """Some errors name the thing that's wrong but not its line, so this looks the name up."""
     names = []
     found = re.search(r"(\w+)\(\) has no yield", text)
     if found:
@@ -164,7 +163,7 @@ def find_line(text, folder):
 
 
 def error(title, folder, name=None, line=None, detail="", hint=None):
-    """One error, in the shape the terminal and the box over the game both use."""
+    """Builds one error the way the terminal and the box over the game both show it."""
     where = link = ""
     if name:
         where = "%s, line %s" % (name, line) if line else name
@@ -237,7 +236,7 @@ def say(text):
 
 
 class Show:
-    """What the game is showing right now: which island, where the player starts, what's wrong."""
+    """Keeps track of which island the game is showing, where the player starts and what's wrong."""
 
     def __init__(self, island, at=None):
         self.lock = threading.Lock()
@@ -304,7 +303,7 @@ class Show:
         return "/?" + urllib.parse.urlencode(q, safe="/")
 
     def heard(self, text):
-        """The game printed something. Keep it if it's about the island, and say it in the terminal."""
+        """When the game prints something about the island, keep it and say it in the terminal."""
         with self.lock:
             if text.startswith("[print] "):
                 say(text[8:])
@@ -317,7 +316,7 @@ class Show:
                     self.tell([self.runtime[-1]])
             else:
                 got = explain(text, self.folder)
-                # when python already couldn't read the file, the game failing to load it is the same news
+                # if python already couldn't read the file, don't also say the game didn't load it
                 if got and self.checked and "didn't load" in got["title"]:
                     got = None
                 if got and got not in self.runtime:
@@ -435,7 +434,7 @@ class Handler(BaseHTTPRequestHandler):
             status, headers, body = e.code, e.headers, e.read()
         except Exception as e:
             page = ("<h1>Can't reach the game</h1><p>play.py gets the game from %s and it didn't "
-                    "answer. Check that you're online, then reload.</p><p><small>%s</small></p>" % (GAME, e))
+                    "answer, so check that you're online and reload the page.</p><p><small>%s</small></p>" % (GAME, e))
             return self.answer(502, page.encode("utf-8"), "text/html; charset=utf-8")
 
         ctype = headers.get("Content-Type", "application/octet-stream")
@@ -469,7 +468,7 @@ def git(*args):
 
 
 def mine():
-    """The island that belongs to whoever is working here: the one named after their branch."""
+    """The island named after the branch you're on, which is the one that's yours."""
     branch = git("branch", "--show-current")
     return branch if branch and branch in find_islands() else None
 
@@ -515,9 +514,11 @@ def already_running(island, at):
     q = urllib.parse.urlencode([(k, v) for k, v in (("island", island), ("at", at)) if v])
     try:
         with urllib.request.urlopen("http://localhost:%d/_play/switch?%s" % (PORT, q), timeout=2) as got:
-            json.loads(got.read().decode("utf-8"))
+            showing = json.loads(got.read().decode("utf-8")).get("island")
     except Exception:
         return False
+    if showing != island:
+        raise SystemExit("a play.py from a different folder is already using port %d, so stop that one first" % PORT)
     say("  the game is already open, so it switched to %s" % island)
     return True
 

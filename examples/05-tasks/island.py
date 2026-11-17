@@ -19,11 +19,11 @@ def arriving():
 
 @on_talk("host")
 def president():
-    yield say("Hi. Go look at our trophies.", who="host")
+    yield say("Hi, go take a look at our trophies.", who="host")
     yield task_done("president")
 
 
 @on_talk("trophies")
 def trophies():
-    yield say("Shiny.")
+    yield say("They're pretty shiny.")
     yield task_done("trophies")

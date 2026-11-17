@@ -81,7 +81,7 @@ class WhatPlaySaysAboutMistakes(unittest.TestCase):
             f.write(text.replace(old, new))
 
     def test_a_missing_quote_is_named_with_its_file_and_line(self):
-        self.write('yield say("Hey. You made it.", who="host")', 'yield say("Hey. You made it., who="host")')
+        self.write('yield say("Hey, you made it.", who="host")', 'yield say("Hey, you made it., who="host")')
         got = play.check(self.folder, ROOM_SPOTS)
         self.assertEqual(len(got), 1)
         self.assertEqual(got[0]["where"], "island.py, line 17")
@@ -96,7 +96,7 @@ class WhatPlaySaysAboutMistakes(unittest.TestCase):
         self.assertIn("host, the_desk", got[0]["detail"])
 
     def test_a_crash_while_talking_gets_its_line_looked_up(self):
-        self.write('yield say("Hey. You made it.", who="host")', 'yield sya("Hey.")')
+        self.write('yield say("Hey, you made it.", who="host")', 'yield sya("Hey.")')
         got = play.explain("[pmap] station host: NameError: name 'sya' isn't defined", self.folder)
         self.assertEqual(got["where"], "island.py, line 17")
         self.assertIn("spelling", got["hint"])
