@@ -1,18 +1,11 @@
 {
-  "files.autoSave": "afterDelay",
-  "files.autoSaveDelay": 800,
+  "files.autoSave": "onFocusChange",
   "files.eol": "\n",
   "editor.tabSize": 4,
   "editor.insertSpaces": true,
-  "editor.rulers": [100],
   "git.enableSmartCommit": true,
   "git.confirmSync": false,
   "git.postCommitCommand": "sync",
   "git.autofetch": true,
-  "python.analysis.extraPaths": ["."],
-  "files.exclude": {
-    "**/__pycache__": true,
-    "site": true,
-    "out": true
-  }
+  "python.analysis.extraPaths": ["."]
 }

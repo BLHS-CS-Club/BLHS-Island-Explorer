@@ -16,33 +16,23 @@ This is where the islands live, one folder each, written in Python by BLHS CS Cl
 | [BLHS-Vine](https://github.com/BLHS-CS-Club/BLHS-Vine) | the engine that runs them |
 | [MAPVIS](https://github.com/ashwath-polali/MAPVIS) | the map tool the islands are painted in |
 
-## Make your first island
+## Working on an island
 
-You need Python and this folder, and that's all. No engine, no Node, no build.
+Open this folder in VS Code and press F5, or type this in the terminal:
 
 ```
 python play.py
 ```
 
-The game opens in your browser with the islands from this folder. Leave it running. Every time you save a file the game starts over, and if something is wrong it shows you the line.
+A browser tab opens with the real game running your island. When you save a file the game reloads, and if your code has a mistake it shows on top of the game and in the terminal, with the file and the line. Python is the only thing you need installed, because play.py gets the game from the website and swaps your island's files into it.
 
-To start your own, copy `practice/starter` to `practice/your-name` and pick it from the menu on the Play page.
+The first time, run `python play.py --new`. It asks for a name, copies `practice/starter` into `practice/<name>` and puts you on a branch with that name, so your work stays apart from everybody else's.
 
-There is also a Try page that does the same thing with nothing installed: the code on the left, the game on the right, and a Run button. The club's Google Classroom has the link.
+If you can't install Python where you are (the school computers), open the repo in a Codespace from the green Code button on GitHub. That's VS Code in a browser tab with everything already set up, and the game opens beside your code.
 
-## The guides
+## Getting it into the game
 
-`learn/` has one tiny island for each idea, in order. Each one is the code behind a guide and a half-minute video in the club's Google Drive.
-
-| | Guide | What you get |
-| --- | --- | --- |
-| 1 | Make someone talk | A character says your lines |
-| 2 | Give the player a choice | A question with buttons |
-| 3 | Remember what the player did | A different line the second time |
-| 4 | Send the player somewhere | An arrow and a line at the top of the screen |
-| 5 | Give the player a to-do list | Things tick off as they get done |
-| 6 | Ask a question and score it | A real quiz question |
-| 7 | Direct a scene | Black bars, a moving camera, a walk |
+Commit from the Source Control tab in VS Code and press Sync, which puts your branch on GitHub. When it's ready, open a pull request. The checks that run on it are `python tools/manifest.py` and `python -m unittest`, so you can run them yourself first. Ash reviews it and merges it.
 
 ## The two rules
 
@@ -63,37 +53,16 @@ def meet_the_president():
 
 The player walks to the spot named `host`, presses E, and the game calls that function. `@on_start` runs once when the island loads. Every word you can say is in [docs/VOCABULARY.md](docs/VOCABULARY.md).
 
-## Where an island runs
-
-Practice islands and the guide examples all run in the CS Club room. Its spots are `host` (the club president), `the_desk` (a computer), `trophies` and `the_lab` (the whole room).
-
-A real island gets its own map, painted in MAPVIS, and its Python uses the spot names from that map. `islands/skeleton` is the full-size template for one, and `islands/atc` is a finished one you can read.
-
-A real island is three files:
-
-- `island.json` says which map it runs on and what it is
-- `island.py` says what happens: who meets the player, the tasks, what each spot does when pressed
-- `lines.py` is every sentence anyone says
-
-## Getting your island into the game
-
-1. Hand it in. Paste your Try page link in Google Classroom, or open a pull request here if you use Git.
-2. The checks run. They are the same ones as `python tools/manifest.py` and `python -m unittest`.
-3. Ash adds it to the club's copy of the game, where everyone can play it.
-
-The real game that freshmen play only changes when Ash puts an island in it.
-
 ## Where things are
 
-- `play.py` runs the game with your islands
-- `practice/` where you try things. `practice/starter` is the one to copy
-- `learn/` the guide examples
-- `islands/` the real islands, one folder each
+- `play.py` runs the game on your island
+- `practice/` where your own island starts out. `practice/starter` is what `--new` copies
+- `examples/` seven small islands that each do one thing (talk, choices, remembering, arrows, a to-do list, a scored question, a cutscene)
+- `islands/` the finished islands. `islands/atc` is the CS Club's, and `islands/skeleton` is the template for one with its own map
 - `docs/VOCABULARY.md` every word, generated from the engine so it can't go out of date
 - `tests/` what runs on every pull request
-- `tools/` the checker, and the scripts that build the club's guides, slides and videos
-- `club/` the Play page and the Try page
-- `meetings/` the plan for each meeting, which the slides and run sheets are built from
 - `vine.py` and `grape.py` the words and the hooks, kept identical to the engine's copy
+
+Your own island and the examples run in the CS Club room, which has four spots you can use: `host` (the club president), `the_desk` (a computer), `trophies` and `the_lab` (the whole room). A finished island gets its own map from MAPVIS.
 
 Built by the CS Club at Bonney Lake High School. We meet Wednesdays after school, 2:15 to 3:30, in room 305.

@@ -3,17 +3,15 @@
   "tasks": [
     {
       "label": "Play",
-      "detail": "Opens the real game with the islands in this folder. Save a file and it starts over.",
       "type": "shell",
       "command": "python play.py",
       "isBackground": true,
       "problemMatcher": [],
-      "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+      "presentation": { "reveal": "always", "panel": "dedicated" },
       "group": { "kind": "build", "isDefault": true }
     },
     {
-      "label": "Check my islands",
-      "detail": "The same checks that run when you open a pull request.",
+      "label": "Run the checks",
       "type": "shell",
       "command": "python tools/manifest.py && python -m unittest",
       "problemMatcher": [],
