@@ -5,7 +5,7 @@ from vine import as_a_cutscene, look_at, say, walk_to
 
 def the_tour():
     yield say("Let me show you around.", who="host")
-    # look_at moves the camera, and ms is how long the move takes (1500 is a second and a half)
+    # look_at moves the camera, and ms is how long it stays there (1500 is a second and a half)
     yield look_at("trophies", ms=1500)
     yield say("Those are our trophies.", who="host")
     yield look_at("the_desk", ms=1500)
