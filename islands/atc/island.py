@@ -279,7 +279,7 @@ HOW_YOU_JOIN = {
         {
             "text": "Show up after school and fill out a form",
             "correct": True,
-            "reply": "That is it. Room 303, any day after school.",
+            "reply": "That is it, room 305 on Wednesdays after school.",
         },
         {
             "text": "Try out and get picked",

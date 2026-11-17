@@ -18,7 +18,7 @@ DESK = "the_desk"
 # the greeting, then the line that says when the club meets and how to join
 
 HELLO = "Hi, I'm Ashwath. Welcome to the computer science club."
-WHEN_AND_HOW = "We're in 303 after school until three. There's a form if you want to join."
+WHEN_AND_HOW = "We're in 305 on Wednesdays after school, and there's a form if you want to join."
 
 # and what he says on every visit after the first
 AGAIN = "Back again. Grab a machine whenever you want."
@@ -29,7 +29,7 @@ SECOND_YEAR = (
     "You came back. Most people don't. That makes you one of about five "
     "who've done two years of this."
 )
-# said instead of the beginner's explanation, because he already knows where 303 is
+# said instead of the beginner's explanation, because he already knows where 305 is
 SECOND_YEAR_HOW = (
     "You know where we are and you know how it works. So this year you're not "
     "just fixing my program, you're the one people ask."
@@ -41,7 +41,7 @@ SECOND_YEAR_DESK = "Same broken program. See if it's still hard."
 # ---- stop 2, the medal plinth ------------------------------------------------
 # the plinth says this, not a person, so it stays one line
 
-MEDALS = "First year we existed, and we made it to Nationals."
+MEDALS = "First year we existed, and one of us made it to Nationals."
 
 
 # ---- stop 3, at the machine that is on ---------------------------------------
@@ -65,4 +65,4 @@ WELL_DONE = "Nice. That's what we do in here every week."
 # ---- stop 5, the last thing said on the island -------------------------------
 # the join moment, and there is nothing to press: it names the step outside the game
 
-FORM = "Form's on the desk by the door. Come by whenever."
+FORM = "The form's online, so ask anybody in here for the link."
