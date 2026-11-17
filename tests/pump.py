@@ -20,6 +20,8 @@ import sys
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ISLANDS = os.path.join(REPO, "islands")
+PRACTICE = os.path.join(REPO, "practice")
+LEARN = os.path.join(REPO, "learn")
 if REPO not in sys.path:
     sys.path.insert(0, REPO)
 
@@ -40,19 +42,22 @@ class Refused(Exception):
 _loaded = ()
 
 
-def load(island):
+def load(island, root=None):
     """Import one island the way the engine will, and return its manifest.
 
     Only that island's folder is on sys.path, so a file it does not list in
     island.json fails here the same way it fails in the game.
+
+    `root` is the folder the island is in. Leave it out for islands/. Pass
+    pump.PRACTICE or pump.LEARN for the other two.
     """
     global _loaded
-    folder = os.path.join(ISLANDS, island)
+    folder = os.path.join(root or ISLANDS, island)
     # utf-8-sig, so a byte order mark from a Windows editor does not break json.load
     with open(os.path.join(folder, "island.json"), encoding="utf-8-sig") as f:
         manifest = json.load(f)
 
-    sys.path[:] = [p for p in sys.path if not p.startswith(ISLANDS)]
+    sys.path[:] = [p for p in sys.path if not p.startswith((ISLANDS, PRACTICE, LEARN))]
     sys.path.insert(0, folder)
 
     # drop the cached modules of both islands, so an edited file is re-imported
