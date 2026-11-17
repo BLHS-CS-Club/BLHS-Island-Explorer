@@ -43,8 +43,9 @@ ROOTS = ("practice", "islands", "examples")
 # the map an island runs on when its own map hasn't been painted yet (the CS Club room)
 ROOM = "atc-1"
 
-PORT = 5290
-HOOK = '<script src="/_play/hook.js"></script>'
+# the game is served here on your own machine (set BLHS_PLAY_PORT to use a different number)
+PORT = int(os.environ.get("BLHS_PLAY_PORT") or 5290)
+HOOK ='<script src="/_play/hook.js"></script>'
 PASS_ALONG = ("Cache-Control", "Content-Encoding", "Content-Range", "Accept-Ranges", "ETag",
               "Last-Modified")
 
