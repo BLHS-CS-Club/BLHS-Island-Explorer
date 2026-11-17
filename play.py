@@ -556,6 +556,14 @@ def main(argv):
 
     if already_running(island, at):
         return
+    in_codespace = bool(os.environ.get("CODESPACES"))
+    if in_codespace:
+        # a codespace puts the game in a panel beside whatever file is open, so the island's
+        # code gets opened before the game starts answering
+        code = shutil.which("code")
+        if code:
+            # kept quiet, because when no editor is attached it only prints a complaint
+            subprocess.run([code, "-r", os.path.join(islands[island], "island.py")], capture_output=True)
     try:
         server = Server(("127.0.0.1", PORT), Handler)
     except OSError as e:
@@ -570,12 +578,7 @@ def main(argv):
         say("  this is the starter, so run  python play.py --new  to get an island of your own")
     Handler.show.state()
 
-    if os.environ.get("CODESPACES"):
-        # in a codespace the game opens in its own tab, so open the island's code next to it
-        code = shutil.which("code")
-        if code:
-            subprocess.run([code, "-r", os.path.join(islands[island], "island.py")])
-    elif "--no-open" not in flags:
+    if not in_codespace and "--no-open" not in flags:
         try:
             webbrowser.open(url)
         except Exception:
