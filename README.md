@@ -66,3 +66,4 @@ When the player walks to the spot named `host` and presses E, the game calls tha
 Your own island and the examples run in the CS Club room, which has four spots you can use: `host` (the club president), `the_desk` (a computer), `trophies` and `the_lab` (the whole room). A finished island gets its own map from MAPVIS.
 
 The CS Club at Bonney Lake High School makes this, and we meet Wednesdays after school from 2:15 to 3:30 in room 305.
+
