@@ -1,0 +1,469 @@
+{
+  "try_url": "https://blhs-try.vercel.app",
+  "club": {
+    "name": "Computer Science Club",
+    "day": "Wednesdays",
+    "time": "2:15 to 3:30",
+    "room": "Room 305"
+  },
+  "meetings": [
+    {
+      "date": "2026-11-18",
+      "short": "11-18",
+      "title": "Make someone talk",
+      "guides": [
+        "01-talk",
+        "02-choice"
+      ],
+      "leave_with": "A character in the real game who says your lines and asks a question with buttons.",
+      "warmup": {
+        "code": "lunch = [\"pizza\", \"tacos\", \"sushi\"]\nprint(lunch[1])",
+        "answer": "tacos",
+        "why": "Counting starts at 0, so [1] is the second thing. You'll need that in about twenty minutes."
+      },
+      "riddle": {
+        "q": "Nine coins look the same. One is a little heavier. You have a balance scale. What's the fewest weighings that always finds it?",
+        "a": "Two. Weigh three against three. If one side drops, the heavy coin is in it. If they balance, it's in the three you left out. Then weigh one against one from that group."
+      },
+      "plan": [
+        [
+          "2:15",
+          "5",
+          "Warm-up is on the screen as people walk in.",
+          "Slide 1"
+        ],
+        [
+          "2:20",
+          "5",
+          "Take answers out loud, then the riddle. Skip the riddle if you started late.",
+          "Slides 2 to 4"
+        ],
+        [
+          "2:25",
+          "5",
+          "Say what today is. Play the first video. Everyone opens the Try page from Classroom.",
+          "Slides 5 to 7"
+        ],
+        [
+          "2:30",
+          "15",
+          "Guide 1. Everyone does the three things on the slide. Walk around.",
+          "Slide 8"
+        ],
+        [
+          "2:45",
+          "20",
+          "Play the second video. Guide 2, same way.",
+          "Slides 9 and 10"
+        ],
+        [
+          "3:05",
+          "12",
+          "Free time on their own island: their words, their question.",
+          "Slide 11"
+        ],
+        [
+          "3:17",
+          "8",
+          "Two or three people put their link on the projector and play it.",
+          "Slide 12"
+        ],
+        [
+          "3:25",
+          "5",
+          "Everyone presses Copy my link and turns it in on Classroom. Next meeting.",
+          "Slides 12 and 13"
+        ]
+      ],
+      "say": [
+        "Today you put your own words in the real game, the same one freshmen will play.",
+        "You don't need an account for this. Open the link in Classroom and you're in.",
+        "If it breaks, read the red box first. It tells you the line.",
+        "Counting starts at zero. The first button is zero."
+      ],
+      "next": {
+        "when": "December 2",
+        "note": "No club November 25, Thanksgiving week"
+      }
+    },
+    {
+      "date": "2026-12-02",
+      "short": "12-02",
+      "title": "Remember what they did",
+      "guides": [
+        "03-remember"
+      ],
+      "leave_with": "A character who treats you differently the second time you talk to them.",
+      "warmup": {
+        "code": "seen = []\nseen.append(\"met\")\nprint(\"met\" in seen)",
+        "answer": "True",
+        "why": "in asks whether something is on a list. That one word is most of today."
+      },
+      "riddle": {
+        "q": "Three switches downstairs. One of them works the bulb upstairs, and you can't see the bulb from here. Flip them all you want, but you only get one trip up. How do you find the right switch?",
+        "a": "Turn the first one on for a few minutes, then turn it off and turn the second one on. Go up. If the bulb is on, it's the second. If it's off and warm, the first. Off and cold, the third."
+      },
+      "plan": [
+        [
+          "2:15",
+          "5",
+          "Warm-up is on the screen as people walk in.",
+          "Slide 1"
+        ],
+        [
+          "2:20",
+          "5",
+          "Answers out loud, then the riddle.",
+          "Slides 2 to 4"
+        ],
+        [
+          "2:25",
+          "5",
+          "Say what today is. Play the video. Everyone opens the Try page.",
+          "Slides 5 to 7"
+        ],
+        [
+          "2:30",
+          "20",
+          "Guide 3. Everyone does the three things on the slide.",
+          "Slide 8"
+        ],
+        [
+          "2:50",
+          "25",
+          "Free time: mix all three guides on their own island. Greet, ask, remember.",
+          "Slide 9"
+        ],
+        [
+          "3:15",
+          "10",
+          "Two or three people show theirs on the projector.",
+          "Slide 10"
+        ],
+        [
+          "3:25",
+          "5",
+          "Copy my link, turn it in on Classroom. Next meeting.",
+          "Slides 10 and 11"
+        ]
+      ],
+      "say": [
+        "Games feel alive when they remember you. Today yours does.",
+        "A flag is a note your island writes to itself.",
+        "Talk to the president twice in the same run to see both lines."
+      ],
+      "next": {
+        "when": "December 9",
+        "note": ""
+      }
+    },
+    {
+      "date": "2026-12-09",
+      "short": "12-09",
+      "title": "Send them on a quest",
+      "guides": [
+        "04-go-somewhere",
+        "05-tasks"
+      ],
+      "leave_with": "A small quest: the game tells the player where to go and ticks things off a list.",
+      "warmup": {
+        "code": "def greet(name):\n    return \"Hey \" + name\n\nprint(greet(\"Thor\"))",
+        "answer": "Hey Thor",
+        "why": "A function is a block with a name. Every part of your island is one."
+      },
+      "riddle": {
+        "q": "Two doors, two guards. One guard always lies and one always tells the truth, and you don't know which is which. One door is the way out. You get one question for one guard. What do you ask?",
+        "a": "Ask either one: which door would the other guard say is the way out? Then take the opposite door."
+      },
+      "plan": [
+        [
+          "2:15",
+          "5",
+          "Warm-up is on the screen as people walk in.",
+          "Slide 1"
+        ],
+        [
+          "2:20",
+          "5",
+          "Answers out loud, then the riddle.",
+          "Slides 2 to 4"
+        ],
+        [
+          "2:25",
+          "5",
+          "Say what today is. Play the first video. Everyone opens the Try page.",
+          "Slides 5 to 7"
+        ],
+        [
+          "2:30",
+          "15",
+          "Guide 4. Arrows and the line at the top.",
+          "Slide 8"
+        ],
+        [
+          "2:45",
+          "20",
+          "Play the second video. Guide 5, the to-do list.",
+          "Slides 9 and 10"
+        ],
+        [
+          "3:05",
+          "12",
+          "Free time: turn their island into a quest with at least two stops.",
+          "Slide 11"
+        ],
+        [
+          "3:17",
+          "8",
+          "Two or three people show theirs.",
+          "Slide 12"
+        ],
+        [
+          "3:25",
+          "5",
+          "Copy my link, turn it in. Next week is show day, so finish what you want shown.",
+          "Slides 12 and 13"
+        ]
+      ],
+      "say": [
+        "So far the player had to guess what to do. Today the game tells them.",
+        "Next week everyone's island goes up on the screen. Make yours worth watching."
+      ],
+      "next": {
+        "when": "December 16",
+        "note": "Show day"
+      }
+    },
+    {
+      "date": "2026-12-16",
+      "short": "12-16",
+      "title": "Show day",
+      "guides": [],
+      "leave_with": "Everyone's island played on the big screen, and a vote.",
+      "warmup": null,
+      "riddle": null,
+      "plan": [
+        [
+          "2:15",
+          "10",
+          "Everyone opens their island and fixes one last thing.",
+          "Slide 1"
+        ],
+        [
+          "2:25",
+          "40",
+          "Each person or pair pastes their link on the projector computer and somebody else plays it.",
+          "Slide 2"
+        ],
+        [
+          "3:05",
+          "10",
+          "Vote on paper: funniest, and best made.",
+          "Slide 3"
+        ],
+        [
+          "3:15",
+          "10",
+          "What happens next: these islands go into the club's copy of the game over break. In January everyone picks a real BLHS thing to build.",
+          "Slide 4"
+        ],
+        [
+          "3:25",
+          "5",
+          "Last links turned in. See you in January.",
+          "Slide 5"
+        ]
+      ],
+      "say": [
+        "Somebody else plays your island, not you. That's how you find out what's confusing.",
+        "In January you pick one real thing at BLHS, a club, a sport or a class, and build its island."
+      ],
+      "next": {
+        "when": "January 6",
+        "note": "Winter break is December 21 to January 1"
+      }
+    }
+  ],
+  "calendar": [
+    [
+      "2026-11-18",
+      "game",
+      "Make someone talk",
+      "Guides 1 and 2"
+    ],
+    [
+      "2026-11-25",
+      "off",
+      "No club",
+      "Thanksgiving week. Change this if you want to meet."
+    ],
+    [
+      "2026-12-02",
+      "game",
+      "Remember what they did",
+      "Guide 3"
+    ],
+    [
+      "2026-12-09",
+      "game",
+      "Send them on a quest",
+      "Guides 4 and 5"
+    ],
+    [
+      "2026-12-16",
+      "other",
+      "Show day",
+      "Everyone's island on the big screen, and a vote"
+    ],
+    [
+      "2026-12-23",
+      "off",
+      "Winter break",
+      ""
+    ],
+    [
+      "2026-12-30",
+      "off",
+      "Winter break",
+      ""
+    ],
+    [
+      "2027-01-06",
+      "game",
+      "Ask a real question",
+      "Guide 6"
+    ],
+    [
+      "2027-01-13",
+      "game",
+      "Direct a scene",
+      "Guide 7"
+    ],
+    [
+      "2027-01-20",
+      "game",
+      "Pick your real island",
+      "Each member picks one real BLHS thing and collects true facts about it"
+    ],
+    [
+      "2027-01-27",
+      "other",
+      "Competition practice",
+      "Short timed problems in pairs"
+    ],
+    [
+      "2027-02-03",
+      "game",
+      "Build",
+      "Their real island, in the CS Club room for now"
+    ],
+    [
+      "2027-02-10",
+      "game",
+      "Map day",
+      "Start your own map in MAPVIS"
+    ],
+    [
+      "2027-02-17",
+      "check",
+      "Check the school calendar",
+      "Mid-winter break may fall here"
+    ],
+    [
+      "2027-02-24",
+      "other",
+      "Break each other's island",
+      "Swap, play, write down what broke"
+    ],
+    [
+      "2027-03-03",
+      "game",
+      "Build",
+      ""
+    ],
+    [
+      "2027-03-10",
+      "game",
+      "Build",
+      ""
+    ],
+    [
+      "2027-03-17",
+      "game",
+      "Build",
+      "First islands ready for the club's copy of the game"
+    ],
+    [
+      "2027-03-24",
+      "other",
+      "Competition practice",
+      ""
+    ],
+    [
+      "2027-03-31",
+      "game",
+      "Playtest",
+      "Play each other's islands start to finish"
+    ],
+    [
+      "2027-04-07",
+      "check",
+      "Check the school calendar",
+      "Spring break may fall here"
+    ],
+    [
+      "2027-04-14",
+      "game",
+      "Fix what the playtest found",
+      ""
+    ],
+    [
+      "2027-04-21",
+      "game",
+      "Polish",
+      "The best islands get picked for the real game"
+    ],
+    [
+      "2027-04-28",
+      "other",
+      "Bring a friend",
+      "Friends play the islands. Members watch and take notes"
+    ],
+    [
+      "2027-05-05",
+      "game",
+      "Build",
+      ""
+    ],
+    [
+      "2027-05-12",
+      "game",
+      "Build",
+      ""
+    ],
+    [
+      "2027-05-19",
+      "other",
+      "Game jam",
+      "One meeting, one tiny island from scratch, in pairs"
+    ],
+    [
+      "2027-05-26",
+      "game",
+      "Finish and hand over",
+      ""
+    ],
+    [
+      "2027-06-02",
+      "other",
+      "Next year",
+      "Pick next year's leads and what to build first"
+    ],
+    [
+      "2027-06-09",
+      "other",
+      "Last meeting",
+      "Play the whole game together"
+    ]
+  ]
+}
