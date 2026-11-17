@@ -1,0 +1,14 @@
+{
+  "name": "BLHS islands",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "forwardPorts": [5290],
+  "portsAttributes": {
+    "5290": { "label": "the game", "onAutoForward": "openBrowser" }
+  },
+  "postAttachCommand": "python play.py",
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-python.python"]
+    }
+  }
+}

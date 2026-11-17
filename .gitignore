@@ -1,6 +1,10 @@
 __pycache__/
 *.pyc
-.vscode/
+# what the tools build: the site to put online, and the files for the club's Drive
+site/
+out/
+# things that stay off the public repo, like the Classroom join code
+meetings/local.json
 .idea/
 .DS_Store
 node_modules/
