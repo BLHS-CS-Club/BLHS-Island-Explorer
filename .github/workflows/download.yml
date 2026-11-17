@@ -1,0 +1,38 @@
+# Keeps one download of the whole folder on GitHub for computers that don't have
+# Git. Every change to main rebuilds it, and the link to it stays the same:
+# https://github.com/BLHS-CS-Club/BLHS-Island-Explorer/releases/download/download/cs-club-islands.zip
+name: download
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: download
+  cancel-in-progress: true
+
+jobs:
+  zip:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      # the files sit at the top of the zip, so unzipping gives one folder with play.py right in it
+      - name: zip the folder the way a member opens it
+        run: |
+          git archive --format=zip -o cs-club-islands.zip HEAD \
+            play.py grape.py vine.py islands.json README.md practice examples islands tools tests docs .vscode
+
+      - name: put it where the link points
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if ! gh release view download > /dev/null 2>&1; then
+            gh release create download --title "The folder, for a computer without Git" \
+              --notes "Download cs-club-islands.zip, unzip it, open that folder in VS Code, open practice/starter/island.py and press the run button."
+          fi
+          gh release upload download cs-club-islands.zip --clobber
