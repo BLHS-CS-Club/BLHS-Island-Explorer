@@ -18,7 +18,7 @@ This is where the islands live, one folder each, written in Python by BLHS CS Cl
 
 ## Working on an island
 
-Open this folder in VS Code and press F5, or type this in the terminal:
+Open this folder in VS Code, open an island's `island.py` (start with `practice/starter/island.py`) and press the run button, the triangle at the top right of the file. Or type this in the terminal:
 
 ```
 python play.py
@@ -26,13 +26,17 @@ python play.py
 
 A browser tab opens with the real game running your island. When you save a file the game reloads, and if your code has a mistake it shows on top of the game and in the terminal, with the file and the line. Python is the only thing you need installed, because play.py gets the game from the website and swaps your island's files into it.
 
-The first time, run `python play.py --new`. It asks for a name, copies `practice/starter` into `practice/<name>` and puts you on a branch with that name, so your work stays apart from everybody else's.
+When you want an island of your own, run `python play.py --new`. It asks for a name, copies `practice/starter` into `practice/<name>` with whatever you already wrote in it, and puts you on a branch with that name, so your work stays apart from everybody else's.
 
-If you can't install Python where you are (the school computers), open the repo in a Codespace from the green Code button on GitHub. That's VS Code in a browser tab with everything already set up, and the game opens beside your code.
+On a computer that doesn't have Git, like the ones at school, [download the folder](https://github.com/BLHS-CS-Club/BLHS-Island-Explorer/releases/download/download/cs-club-islands.zip), unzip it and open it in VS Code the same way.
+
+## Giving your island its own map
+
+Make the map in MAPVIS, name its spots and publish it. Then put the map's name on the `"map"` line of your `island.json` and press run, and the game opens your island on that map. The names you give `@on_talk` are the spot names you typed in MAPVIS, and if one is wrong the error lists the ones the map really has.
 
 ## Getting it into the game
 
-Commit from the Source Control tab in VS Code and press Sync, which puts your branch on GitHub. When it's ready, open a pull request, and the same checks you can run yourself (`python tools/manifest.py` and `python -m unittest`) run on it before Ash reviews it and merges it.
+Commit from the Source Control tab in VS Code and press Sync, which puts your branch on GitHub, then open a pull request. It only gets through if it changes nothing outside your own folder. The checks you can run yourself (`python tools/manifest.py` and `python -m unittest`) run on it, and a comment shows up with a link that plays your island in the real game. Ash plays it and merges it, and from then on the second link in that comment plays your island for anybody you send it to.
 
 ## The two rules
 
@@ -63,6 +67,6 @@ When the player walks to the spot named `host` and presses E, the game calls tha
 - `tests/` is what runs on every pull request
 - `vine.py` and `grape.py` are the words and the hooks, kept identical to the engine's copy
 
-Your own island and the examples run in the CS Club room, which has four spots you can use: `host` (the club president), `the_desk` (a computer), `trophies` and `the_lab` (the whole room). A finished island gets its own map from MAPVIS.
+Until you give it a map of its own, your island runs in the CS Club room, and so do the examples. The room has four spots you can use: `host` (the club president), `the_desk` (a computer), `trophies` and `the_lab` (the whole room).
 
 The CS Club at Bonney Lake High School makes this, and we meet Wednesdays after school from 2:15 to 3:30 in room 305.
