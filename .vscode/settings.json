@@ -10,6 +10,7 @@
   "python.analysis.extraPaths": ["."],
   "python.terminal.launchArgs": ["play.py", "--file"],
   "files.exclude": { "**/__pycache__": true },
+  "explorer.compactFolders": false,
   "debug.openDebug": "neverOpen",
   "debug.internalConsoleOptions": "neverOpen",
   "debug.showInStatusBar": "never"
