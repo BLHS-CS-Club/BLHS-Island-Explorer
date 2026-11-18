@@ -28,7 +28,7 @@ A browser tab opens with the real game running your island. When you save a file
 
 When you want an island of your own, run `python play.py --new`. It asks for a name, copies `practice/starter` into `practice/<name>` with whatever you already wrote in it, and puts you on a branch with that name, so your work stays apart from everybody else's.
 
-On a computer that doesn't have Git, like the ones at school, [download the folder](https://github.com/BLHS-CS-Club/BLHS-Island-Explorer/releases/download/download/cs-club-islands.zip), unzip it and open it in VS Code the same way.
+On a computer that doesn't have Git, like the ones at school, [download the folder](https://github.com/BLHS-CS-Club/BLHS-Island-Explorer/releases/download/download/cs-club-islands.zip), unzip it and open it in VS Code the same way. The download brings its own Python as well, so on a computer that doesn't have Python either, you start the game by typing `.\play` in the terminal instead of `python play.py`, and it opens the same way.
 
 ## Giving your island its own map
 

@@ -595,7 +595,10 @@ def main(argv):
     say("  game      %s" % url)
     say("  the game reloads when you save, and errors show up here (ctrl+c to stop)")
     if island == "starter" and not mine():
-        say("  this is the starter, so run  python play.py --new  to get an island of your own")
+        # play.cmd says when it's the one that started this, because on a computer with no python
+        # of its own the thing to type is .\play and python play.py would only fail
+        how = ".\\play --new" if os.environ.get("BLHS_PLAY_CMD") else "python play.py --new"
+        say("  this is the starter, so run  %s  to get an island of your own" % how)
     Handler.show.state()
 
     if "--no-open" not in flags:
